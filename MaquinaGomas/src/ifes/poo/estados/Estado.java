@@ -1,10 +1,17 @@
 package ifes.poo.estados;
 
-import ifes.poo.goma.Goma;
+import ifes.poo.menu.ControleMenu;
 
-public interface Estado {
-	public void proximoEstado(Estado e);
-	public void selecionarGoma(Goma g);
-	public void getGomaSelecionada();
-	public void ajuda();
+public interface Estado{
+	public ControleMenu getControleMenu();
+	public void setProximoEstado(Estado e);
+	public void setEstadoAnterior(Estado e);
+	public void setEstadoAlternativo(Estado e);
+	public void setEstadoMaquina(Estado e);
+	public Estado getProximoEstado();
+	public Estado getEstadoAnterior();
+	public Estado getEstadoAlternativo();
+	public String getNome();
+	public void atualizarStatus(String texto);
+
 }
