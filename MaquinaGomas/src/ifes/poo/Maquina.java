@@ -1,17 +1,11 @@
 package ifes.poo;
 
 import ifes.poo.estados.ControleEstado;
-import ifes.poo.estados.Disponivel;
-import ifes.poo.estados.Esperando;
-import ifes.poo.estados.Estado;
-import ifes.poo.estados.Indisponivel;
-import ifes.poo.estados.Processando;
 import ifes.poo.goma.Goma;
 import ifes.poo.goma.GomaLaranja;
 import ifes.poo.goma.GomaMenta;
 import ifes.poo.goma.GomaMorango;
 import ifes.poo.goma.GomaUva;
-import ifes.poo.menu.ControleMenu;
 import ifes.poo.moeda.CincoCentavos;
 import ifes.poo.moeda.CinquentaCentavos;
 import ifes.poo.moeda.DezCentavos;
@@ -53,6 +47,7 @@ public class Maquina {
 	
 	public void Iniciar() throws IOException{
 		int opcao=0;
+		controleEstado.getMenuAtual().limparTela();
 		
 		while(true){
 			atualizarStatus();
@@ -75,94 +70,67 @@ public class Maquina {
 			}
 			
 			else if(getNomeEstadoAtual().equals("ESPERANDO")){
-				if(opcao==1) controleEstado.avancarProximoEstado();
+				if(controleEstado.getMenuAtual().toString().contains("Administrativo")){
+					if(opcao==1) controleEstado.getEstadoAtual().getControleMenu().avancarProximoMenu();
+					
+					else if(opcao==2) retirarMoedas(); 
+					
+					else if(opcao==3) reporGomas();
+					
+					else if(opcao==4){					
+						exibirEncerramento();
+						break;
+					}
+				}
 				
-				else if(opcao==2) retirarMoedas(); 
+				else if (controleEstado.getMenuAtual().toString().contains("Cliente")){
+					
+					if(opcao==1) controleEstado.getEstadoAtual().getControleMenu().avancarProximoMenu();
+					
+					else if (opcao == 2) controleEstado.getEstadoAtual().getControleMenu().voltarMenuAnterior();
+					
+				}
 				
-				else if(opcao==3) reporGomas();
-				
-				else if(opcao==4){					
-					exibirEncerramento();
-					break;
+				else if (controleEstado.getMenuAtual().toString().contains("EscolherMoedas")){
+					if (opcao==1) inserirMoeda (new UmReal());
+					
+					else if (opcao==2) inserirMoeda(new CinquentaCentavos());
+					
+					else if (opcao==3) inserirMoeda(new VinteCincoCentavos());
+					
+					else if (opcao==4) inserirMoeda(new DezCentavos());
+					
+					else if (opcao==5) inserirMoeda(new CincoCentavos());
+					
+					else if(opcao==6) controleEstado.getEstadoAtual().getControleMenu().voltarMenuAnterior();
 				}
 			}
 			
+			else if(getNomeEstadoAtual().equals("DISPONIVEL")) if (controleEstado.getMenuAtual().toString().contains("Cliente")) if(opcao==1) puxarAlavanca();
 			
+			
+			else if(getNomeEstadoAtual().equals("PROCESSANDO"))	if (controleEstado.getMenuAtual().toString().contains("Cliente")) if(opcao==1) ejetarGoma();
 		}
-		
-		/*
-		while(true){			
-			
-			break;
-		
-			
-			controleMenu.getMenuAtual().exibirMenu();
-			
-			
-			if(controleMenu.getMenuAtual().toString().contains("Administrativo")){
-				
-				if(opcao==1) controleMenu.avancarProximoEstado();
-				
-				else if(opcao==2) retirarMoedas(); 
-				
-				else if(opcao==3) reporGomas();
-				
-				else if(opcao==4){ 
-					exibirEncerramento();
-					break;
-				}
-			}
-			else if(controleMenu.getMenuAtual().toString().contains("Cliente")){
-				
-				if(opcao==1) controleMenu.avancarProximoEstado();
-				
-				else if(opcao==2) puxarAlavanca(); 
-				
-				else if(opcao==3) ejetarGoma();
-				
-				else if(opcao==4) controleMenu.voltarEstadoAnterior();
-			}
-			
-			else if(controleMenu.getMenuAtual().toString().contains("Moedas")){
-				
-			if (opcao==1) inserirMoeda (new UmReal());
-			
-			else if (opcao==2) inserirMoeda(new CinquentaCentavos());
-			
-			else if (opcao==3) inserirMoeda(new VinteCincoCentavos());
-			
-			else if (opcao==4) inserirMoeda(new DezCentavos());
-			
-			else if (opcao==5) inserirMoeda(new CincoCentavos());
-			
-			else if(opcao==6) controleMenu.voltarEstadoAnterior(); 					
-			}
-		}
-		*/
 	}
 			
 	public void atualizarStatus(){
 		
-		if(controleEstado.getMenuAtual().toString().contains("Cliente")){
-			controleEstado.atualizarStatus("GOMAS: "+gomas.size());
-		}
-		else if(controleEstado.getMenuAtual().toString().contains("Administrativo")){
-			controleEstado.atualizarStatus("DINHEIRO: R$ "+dinheiro.size()+",00      GOMAS: "+gomas.size());
-		}
-
+		if(controleEstado.getMenuAtual().toString().contains("Cliente")) controleEstado.atualizarStatus("GOMAS: "+gomas.size());
+		else if(controleEstado.getMenuAtual().toString().contains("Administrativo")) controleEstado.atualizarStatus("DINHEIRO: R$ "+dinheiro.size()+",00      GOMAS: "+gomas.size());
+		else if(controleEstado.getMenuAtual().toString().contains("EscolherMoedas")) controleEstado.atualizarStatus("GOMAS: "+gomas.size());
 	}
 	
-	public int retirarMoedas(){
+	public void retirarMoedas(){
 		int valor = this.dinheiro.size();
 		if(valor > 0){
 			this.dinheiro.removeAll(this.dinheiro);
 			exibirMensagem("R$ "+valor+",00 retirados com sucesso.");
 		}
-		else{
-			exibirMensagem("Nenhuma quantia disponivel para retirar.");
-		}
+		
+		else exibirMensagem("Nenhuma quantia disponivel para retirar.");
+		
 		systemPause();
-		return valor;
+		dinheiroTotalObtido = dinheiroTotalObtido + valor;
 	}
 	
 	private ArrayList<Goma> definirSabores(){
@@ -176,13 +144,7 @@ public class Maquina {
 	}
 	
 	public void reporGomas(){
-		if(getNomeEstadoAtual().equals("INDISPONIVEL")){
-			controleEstado.avancarProximoEstado();
-		}
-		else{
-			// Ainda vou ver o que tem que fazer se estiver em outro estado
-			System.out.println("Não estava indisponivel.. tava"+controleEstado.getEstadoAtual().toString());
-		}
+		if(getNomeEstadoAtual().equals("INDISPONIVEL")) controleEstado.avancarProximoEstado();
 		
 		int sabor=0;
 		for(int k=gomas.size(); k < QUANTIDADE_MAXIMA_GOMAS ; k++){
@@ -209,27 +171,24 @@ public class Maquina {
 		
 	public void inserirMoeda(Moeda m){
 		moedaAtual = m;
-		
-		if(m.getValor()<1){
-			exibirMensagem("Moeda de R$ "+m.getValor()+" foi inserida.");
-			ejetarMoeda();
-		}
-		else{
-			exibirMensagem("Moeda de R$ "+m.getValor()+",00 foi inserida.");
-			controleEstado.getMenuAtual().getMenuAnterior();
-		}
-		
-		systemPause();
 		controleEstado.avancarProximoEstado();
+		if(m.getValor()<1) ejetarMoeda();		
+		
+		dinheiro.add(moedaAtual);
 	}
 	
 	public void ejetarMoeda(){
 		this.moedaAtual = null;
 		controleEstado.avancarEstadoAlternativo();	
+		controleEstado.avancarProximoMenu();
 	}
 	
 	public void ejetarGoma(){
-		//controleEstado.ava
+		if(gomas.size()>1) controleEstado.avancarProximoEstado();
+		else controleEstado.avancarEstadoAlternativo();
+		controleEstado.voltarMenuAnterior();
+		exibirMensagem("Goma Selecionada: "+escolherGoma().getSabor());
+		systemPause();
 	}
 	
 	public void puxarAlavanca(){
@@ -251,7 +210,6 @@ public class Maquina {
 		int numeroEscolhido = gerador.nextInt(gomas.size());
 		Goma gomaEscolhida = gomas.get(numeroEscolhido);
 		gomas.remove(numeroEscolhido);	
-		systemPause();
 		return gomaEscolhida;
 	}
 	

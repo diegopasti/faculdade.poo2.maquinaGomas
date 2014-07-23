@@ -6,7 +6,8 @@ public class Esperando extends EstadoPadrao {
 	
 	public Esperando(){
 		setControleMenu(new ControleMenu());
-		getControleMenu().getMenuAdministrativo().addOpcao("I N I C I A R   I N T E R F A C E   A D M I N I S T R A T I V A");
+		getControleMenu().setMenuAtual(getControleMenu().getMenuAdministrativo());
+		getControleMenu().getMenuAdministrativo().addOpcao("I N I C I A R   I N T E R F A C E   C L I E N T E");
 		getControleMenu().getMenuAdministrativo().addOpcao("R E T I R A R   M O E D A S");
 		getControleMenu().getMenuAdministrativo().addOpcao("R E P O R   D E   G O M A S");
 		getControleMenu().getMenuAdministrativo().addOpcao("D E S L I G A R");		
@@ -19,7 +20,8 @@ public class Esperando extends EstadoPadrao {
 		getControleMenu().getMenuEscolherMoedas().addOpcao("R$ 0,25");
 		getControleMenu().getMenuEscolherMoedas().addOpcao("R$ 0,10");
 		getControleMenu().getMenuEscolherMoedas().addOpcao("R$ 0,05");
-		getControleMenu().getMenuEscolherMoedas().addOpcao("C A N C E L A R");		
+		getControleMenu().getMenuEscolherMoedas().addOpcao("C A N C E L A R");	
+		
 	}
 	
 	public String getNome(){

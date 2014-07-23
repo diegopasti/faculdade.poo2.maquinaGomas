@@ -22,14 +22,10 @@ public class ControleMenu {
 		return menuCliente;
 	}
 
-	//estadoMaquina.getControleMenu().getMenuAtual().getOpcoes();
-	
-	
 	public ControleMenu(){
 		menuAdministrativo = new MenuAdministrativo();
 		menuEscolherMoedas = new MenuEscolherMoedas();
 		menuCliente = new MenuCliente();
-		setMenuAtual(menuAdministrativo);
 		configurarMenus();
 	}
 	
@@ -60,7 +56,6 @@ public class ControleMenu {
 		menuEscolherMoedas.setMenuAnterior(menuCliente);
 	}
 	
-	
 	public void avancarProximoMenu(){
 		if(menuAtual.getProximoMenu() != null){
 			menuAtual.limparTela();
@@ -74,5 +69,4 @@ public class ControleMenu {
 			menuAtual = (MenuPadrao) menuAtual.getMenuAnterior();	
 		}
 	}
-
 }

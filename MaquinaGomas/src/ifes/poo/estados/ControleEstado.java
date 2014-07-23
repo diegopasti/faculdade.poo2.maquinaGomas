@@ -9,6 +9,7 @@ public class ControleEstado {
 	private Estado estadoProcessando;
 	private Estado estadoIndisponivel;
 	private Estado estadoAtual;
+	private Menu menuAtual;
 	
 	public void exibirMenu(){
 		estadoAtual.getControleMenu().getMenuAtual().exibirMenu();
@@ -27,12 +28,13 @@ public class ControleEstado {
 				
 		estadoIndisponivel.setProximoEstado(estadoEsperando);
 		
+		estadoEsperando.setProximoEstado(estadoDisponivel);
+				
 		estadoDisponivel.setProximoEstado(estadoProcessando);
 		estadoDisponivel.setEstadoAlternativo(estadoEsperando);
 		
 		estadoProcessando.setProximoEstado(estadoEsperando);
 		estadoProcessando.setEstadoAlternativo(estadoIndisponivel);	
-		
 	}
 	
 	public void avancarProximoEstado(){
@@ -45,10 +47,6 @@ public class ControleEstado {
 	
 	public void voltarEstadoAnterior(){
 		setEstadoAtual((Estado) estadoAtual.getEstadoAnterior());
-	}
-	
-	public Menu getMenuAtual(){
-		return getEstadoAtual().getControleMenu().getMenuAtual();
 	}
 	
 	public Estado getEstadoAtual() {
@@ -71,6 +69,21 @@ public class ControleEstado {
 		getEstadoAtual().atualizarStatus(texto);
 	}
 
+	public void setMenuAtual(Menu menuAtual) {
+		this.menuAtual = menuAtual;
+	}
 	
-
+	public Menu getMenuAtual(){
+		return getEstadoAtual().getControleMenu().getMenuAtual();
+	}
+	
+	public void voltarMenuAnterior(){
+		getEstadoAtual().getControleMenu().voltarMenuAnterior();
+		menuAtual = getEstadoAtual().getControleMenu().getMenuAtual();
+	}
+	
+	public void avancarProximoMenu(){
+		getEstadoAtual().getControleMenu().avancarProximoMenu();
+		menuAtual = getEstadoAtual().getControleMenu().getMenuAtual();
+	}
 }
